@@ -6,7 +6,7 @@ import utilStyles from '@/styles/utils.module.css'
 
 type LayoutProps = {
   children: React.ReactNode
-  home: boolean
+  home?: boolean
 }
 
 const name = 'Yousuke Fujigaya'
