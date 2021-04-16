@@ -1,12 +1,21 @@
+# .editorconfigが設置されている階層以下にルールを適用
 root = true
 
+# すべてのファイルに適用
 [*]
+# インデントスタイル: space
 indent_style = space
+# インデント幅: 2
 indent_size = 2
+# 改行コード指定: LF
 end_of_line = lf
 charset = utf-8
+# 行末スペースを削除: true
 trim_trailing_whitespace = true
+# ファイル末尾の改行: true
 insert_final_newline = true
 
+# markdownファイルに適用
 [*.md]
+# 行末スペースを削除: false
 trim_trailing_whitespace = false
