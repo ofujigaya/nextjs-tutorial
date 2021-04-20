@@ -3,6 +3,8 @@ import path from 'path'
 import matter from 'gray-matter'
 import remark from 'remark'
 import html from 'remark-html'
+import fetch from 'node-fetch'
+const base64 = require('js-base64').Base64
 
 const postsDirectory = path.join(process.cwd(), 'posts')
 
@@ -36,8 +38,30 @@ export function getSortedPostsData() {
   })
 }
 
-export function getAllPostIds() {
-  const fileNames = fs.readdirSync(postsDirectory)
+interface Post {
+  name: string
+  path: string
+  sha: string
+  size: number
+  url: string
+  html_url: string
+  git_url: string
+  download_url: string
+  type: string
+  _links: {
+    self: string
+    git: string
+    html: string
+  }
+}
+
+export async function getAllPostIds() {
+  const repoUrl = 'https://api.github.com/repos/ofujigaya/nextjs-tutorial/contents/posts'
+  const response = await fetch(repoUrl)
+  const posts: Post[] = await response.json()
+  const fileNames = posts.map((post) => post.name)
+
+  // const fileNames = fs.readdirSync(postsDirectory)
 
   // Returns an array that looks like this:
   // [
@@ -62,8 +86,13 @@ export function getAllPostIds() {
 }
 
 export const getPostData = async (id: string) => {
-  const fullPath = path.join(postsDirectory, `${id}.md`)
-  const fileContents = fs.readFileSync(fullPath, 'utf8')
+  const repoUrl = `https://api.github.com/repos/ofujigaya/nextjs-tutorial/contents/posts/${id}.md`
+  const response = await fetch(repoUrl)
+  const file = await response.json()
+  const fileContents = base64.decode(file.content)
+
+  // const fullPath = path.join(postsDirectory, `${id}.md`)
+  // const fileContents = fs.readFileSync(fullPath, 'utf8')
 
   // Use gray-matter to parse the post metadata section
   const matterResult = matter(fileContents)
